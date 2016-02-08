@@ -19,6 +19,11 @@
      ConsoleService.logStringMessage(aMessage);
     },
 
+    getTargetFolder: function(aFolder) {
+      var folders = aFolder ? [aFolder] : gFolderTreeView.getSelectedFolders();
+      return folders[0];
+    },
+
     isEmpty: function(aFolder) {
       return !aFolder.hasSubFolders && aFolder.getTotalMessages(false) === 0;
     },
@@ -26,6 +31,7 @@
     init: function() {
       gFolderTreeController.__delete_only_empty_folder__deleteFolder = gFolderTreeController.deleteFolder;
       gFolderTreeController.deleteFolder = function(aFolder, ...aArgs) {
+        aFolder = DeleteOnlyEmptyFolder.getTargetFolder(aFolder);
         if (!DeleteOnlyEmptyFolder.isEmpty(aFolder)) {
           this.log('Cancel to delete folder: it is not empty folder.');
           return;
