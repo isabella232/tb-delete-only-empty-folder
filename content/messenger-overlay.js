@@ -28,6 +28,16 @@
       return !aFolder.hasSubFolders && aFolder.getTotalMessages(false) === 0;
     },
 
+    isInTrash: function(aFolder) {
+      if (!aFolder)
+        return false;
+
+      if (aFolder.flags & Ci.nsMsgFolderFlags.Trash)
+        return true;
+
+      return this.isInTrash(aFolder.parent);
+    },
+
     init: function() {
       gFolderTreeController.__delete_only_empty_folder__deleteFolder = gFolderTreeController.deleteFolder;
       gFolderTreeController.deleteFolder = function(aFolder, ...aArgs) {
@@ -65,6 +75,7 @@
       gFolderTreeView.canDrop = function(aRow, aOrientation, ...aArgs) {
         var dropTargetFolder = gFolderTreeView._rowMap[aRow]._folder;
         if (dropTargetFolder &&
+            DeleteOnlyEmptyFolder.isInTrash(dropTargetFolder) &&
             aOrientation === Ci.nsITreeView.DROP_ON) {
           let dt = this._currentTransfer;
           let types = dt.mozTypesAt(0);
