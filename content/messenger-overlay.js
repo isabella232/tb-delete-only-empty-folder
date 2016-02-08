@@ -3,16 +3,33 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 (function (aGlobal) {
+  var Cc = Components.classes;
+  var Ci  =Components.interfaces;
+
+  var ConsoleService = Cc['@mozilla.org/consoleservice;1']
+                         .getService(Ci.nsIConsoleService);
+
   var DeleteOnlyEmptyFolder = {
-    isEmpty : function(aFolder) {
+    debug: true,
+
+    log: function(aMessage) {
+      if (!this.debug)
+        return;
+
+     ConsoleService.logStringMessage(aMessage);
+    },
+
+    isEmpty: function(aFolder) {
       return !aFolder.hasSubFolders && aFolder.getTotalMessages(false) === 0;
     },
 
     init: function() {
       gFolderTreeController.__delete_only_empty_folder__deleteFolder = gFolderTreeController.deleteFolder;
       gFolderTreeController.deleteFolder = function(aFolder, ...aArgs) {
-        if (!DeleteOnlyEmptyFolder.isEmpty(aFolder))
+        if (!DeleteOnlyEmptyFolder.isEmpty(aFolder)) {
+          this.log('Cancel to delete folder: it is not empty folder.');
           return;
+        }
         return gFolderTreeController.__delete_only_empty_folder__deleteFolder.apply(this, [aFolder].concat(aArgs));
       };
     }
