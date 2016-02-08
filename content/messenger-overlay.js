@@ -3,21 +3,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 (function (aGlobal) {
-  var Ci = Components.interfaces;
-  var Cc = Components.classes;
-  var ObserverService = Cc['@mozilla.org/observer-service;1']
-                          .getService(Ci.nsIObserverService);
   var DeleteOnlyEmptyFolder = {
-    // nsIObserver
-    observe: function observe(aEvent) {
-      ObserverService.removeObserver(this, 'mail-startup-done', false);
-      this.init();
+    isEmpty : function(aFolder) {
+      return true;
+    },
+
+    init: function() {
+      gFolderTreeController.__delete_only_empty_folder__deleteFolder = gFolderTreeController.deleteFolder;
+      gFolderTreeController.deleteFolder = function(aFolder, ...aArgs) {
+        if (!DeleteOnlyEmptyFolder.isEmpty(aFolder))
+          return;
+        return gFolderTreeController.__delete_only_empty_folder__deleteFolder.apply(this, [aFolder].concat(aArgs));
+      };
     }
   };
 
   document.addEventListener('DOMContentLoaded', function onDOMContentLoaded(aEvent) {
     document.removeEventListener('DOMContentLoaded', onDOMContentLoaded);
-    ObserverService.addObserver(DeleteOnlyEmptyFolder, 'mail-startup-done', false);
+    DeleteOnlyEmptyFolder.init();
   });
 
   aGlobal.DeleteOnlyEmptyFolder = DeleteOnlyEmptyFolder;
