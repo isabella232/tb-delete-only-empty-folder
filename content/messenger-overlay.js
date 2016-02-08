@@ -33,7 +33,7 @@
       gFolderTreeController.deleteFolder = function(aFolder, ...aArgs) {
         aFolder = DeleteOnlyEmptyFolder.getTargetFolder(aFolder);
         if (!DeleteOnlyEmptyFolder.isEmpty(aFolder)) {
-          this.log('Cancel to delete folder: it is not empty folder.');
+          DeleteOnlyEmptyFolder.log('Cancel to delete folder: it is not empty folder.');
           return;
         }
         return gFolderTreeController.__delete_only_empty_folder__deleteFolder.apply(this, [aFolder].concat(aArgs));
