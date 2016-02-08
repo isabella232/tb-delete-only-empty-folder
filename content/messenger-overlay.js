@@ -5,7 +5,7 @@
 (function (aGlobal) {
   var DeleteOnlyEmptyFolder = {
     isEmpty : function(aFolder) {
-      return true;
+      return !aFolder.hasSubFolders && aFolder.getTotalMessages(false) === 0;
     },
 
     init: function() {
