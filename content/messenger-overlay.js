@@ -60,6 +60,27 @@
         }
         return window.__delete_only_empty_folder__EnableMenuItem.apply(this, [aId].concat(aArgs));
       };
+
+      gFolderTreeView.__delete_only_empty_folder__canDrop = gFolderTreeView.canDrop;
+      gFolderTreeView.canDrop = function(aRow, aOrientation, ...aArgs) {
+        var dropTargetFolder = gFolderTreeView._rowMap[aRow]._folder;
+        if (dropTargetFolder &&
+            aOrientation === Ci.nsITreeView.DROP_ON) {
+          let dt = this._currentTransfer;
+          let types = dt.mozTypesAt(0);
+          if (Array.indexOf(types, 'text/x-moz-folder') > -1) {
+            for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
+              let folder = dt.mozGetDataAt('text/x-moz-folder', i)
+                             .QueryInterface(Ci.nsIMsgFolder);
+              if (!DeleteOnlyEmptyFolder.isEmpty(folder)) {
+                DeleteOnlyEmptyFolder.log('Dropped folder '+i+' is not empty..');
+                return false;
+              }
+            }
+          }
+        }
+        return gFolderTreeView.__delete_only_empty_folder__canDrop.apply(this, [aRow, aOrientation].concat(aArgs));
+      };
     }
   };
 
