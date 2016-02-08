@@ -38,6 +38,15 @@
         }
         return gFolderTreeController.__delete_only_empty_folder__deleteFolder.apply(this, [aFolder].concat(aArgs));
       };
+
+      window.__delete_only_empty_folder__CanDeleteFolder = window.CanDeleteFolder;
+      window.CanDeleteFolder = function(aFolder, ...aArgs) {
+        if (!DeleteOnlyEmptyFolder.isEmpty(aFolder)) {
+          DeleteOnlyEmptyFolder.log('Disallow to delete non-empty folder.');
+          return;
+        }
+        return window.__delete_only_empty_folder__CanDeleteFolder.apply(this, [aFolder].concat(aArgs));
+      };
     }
   };
 
