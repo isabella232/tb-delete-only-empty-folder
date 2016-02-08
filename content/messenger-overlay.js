@@ -43,7 +43,7 @@
       window.CanDeleteFolder = function(aFolder, ...aArgs) {
         if (!DeleteOnlyEmptyFolder.isEmpty(aFolder)) {
           DeleteOnlyEmptyFolder.log('Disallow to delete non-empty folder.');
-          return;
+          return false;
         }
         return window.__delete_only_empty_folder__CanDeleteFolder.apply(this, [aFolder].concat(aArgs));
       };
