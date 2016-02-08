@@ -8,9 +8,13 @@
 
   var ConsoleService = Cc['@mozilla.org/consoleservice;1']
                          .getService(Ci.nsIConsoleService);
+  var Prefs = Cc['@mozilla.org/preferences;1']
+                .getService(Ci.nsIPrefBranch);
 
   var DeleteOnlyEmptyFolder = {
-    debug: true,
+    get debug() {
+      return Prefs.getBoolPref('extensions.delete-only-empty-folder@clear-code.com.debug');
+    },
 
     log: function(aMessage) {
       if (!this.debug)
