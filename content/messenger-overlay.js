@@ -47,6 +47,19 @@
         }
         return window.__delete_only_empty_folder__CanDeleteFolder.apply(this, [aFolder].concat(aArgs));
       };
+
+      window.__delete_only_empty_folder__EnableMenuItem = window.EnableMenuItem;
+      window.EnableMenuItem = function(aId, ...aArgs) {
+        if (aId === 'folderPaneContext-remove') {
+          let folders = gFolderTreeView.getSelectedFolders();
+          if (!folders.every(DeleteOnlyEmptyFolder.isEmpty, DeleteOnlyEmptyFolder)) {
+            DeleteOnlyEmptyFolder.log('Disallow to delete non-empty folder.');
+            document.getElementById(aId).disabled = true;
+            return;
+          }
+        }
+        return window.__delete_only_empty_folder__EnableMenuItem.apply(this, [aId].concat(aArgs));
+      };
     }
   };
 
