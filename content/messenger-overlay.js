@@ -16,7 +16,7 @@
       if (!this.debug)
         return;
 
-     ConsoleService.logStringMessage(aMessage);
+     ConsoleService.logStringMessage('[delete-only-empty-folder] '+aMessage);
     },
 
     getTargetFolder: function(aFolder) {
