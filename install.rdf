@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="delete-only-empty-folder@clear-code.com"
                    em:name="Delete Only Empty Folder"
-                   em:version="1.0"
+                   em:version="1.1"
                    em:description="Disallows to delete not-empty mail folders."
                    em:creator="ClearCode Inc."
                    em:homepageURL="http://www.clear-code.com/"
